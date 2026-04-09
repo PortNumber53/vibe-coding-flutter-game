@@ -13,7 +13,7 @@ import 'package:mobile/screens/intro_screen.dart';
 import 'package:mobile/screens/main_menu_screen.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
+  testWidgets('App starts with intro screen', (WidgetTester tester) async {
     // Build our app and trigger a frame.
     await tester.pumpWidget(const MyApp());
 
