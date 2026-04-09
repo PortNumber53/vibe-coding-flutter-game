@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'settings_screen.dart';
+import 'leaderboard_screen.dart';
 
 /// Main Menu Screen with navigation options:
 /// - New Game
@@ -34,13 +36,13 @@ class _MainMenuScreenState extends State<MainMenuScreen>
       title: 'Game Settings',
       icon: Icons.settings,
       color: const Color(0xFFFF9800),
-      onTap: (context) => _showNotImplemented(context, 'Game Settings'),
+      onTap: (context) => _navigateToSettings(context),
     ),
     MenuItem(
       title: 'Leaderboard',
       icon: Icons.emoji_events,
       color: const Color(0xFFFFC107),
-      onTap: (context) => _showNotImplemented(context, 'Leaderboard'),
+      onTap: (context) => _navigateToLeaderboard(context),
     ),
   ];
 
@@ -101,6 +103,22 @@ class _MainMenuScreenState extends State<MainMenuScreen>
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  static void _navigateToSettings(BuildContext context) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => const SettingsScreen(),
+      ),
+    );
+  }
+
+  static void _navigateToLeaderboard(BuildContext context) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => const LeaderboardScreen(),
       ),
     );
   }
