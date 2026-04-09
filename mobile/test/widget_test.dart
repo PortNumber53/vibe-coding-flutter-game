@@ -10,7 +10,6 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'package:mobile/main.dart';
 import 'package:mobile/screens/intro_screen.dart';
-import 'package:mobile/screens/main_menu_screen.dart';
 
 void main() {
   testWidgets('App starts with intro screen', (WidgetTester tester) async {
