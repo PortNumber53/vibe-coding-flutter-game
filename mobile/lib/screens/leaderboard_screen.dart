@@ -333,10 +333,7 @@ class _LeaderboardScreenState extends State<LeaderboardScreen>
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Text(
-                    entry.score.toString().replaceAllMapped(
-                      RegExp(r'\B(?=(\d{3})+(?!\d))'),
-                      (match) => ',',
-                    ),
+                    NumberFormat.decimalPattern().format(entry.score),
                     style: const TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
