@@ -294,7 +294,7 @@ class MenuItem {
   final String title;
   final IconData icon;
   final Color color;
-  final Function(BuildContext) onTap;
+  final void Function(BuildContext context) onTap;
 
   MenuItem({
     required this.title,
