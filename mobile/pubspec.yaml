@@ -38,6 +38,9 @@ dependencies:
  # Local storage for settings
  shared_preferences: ^2.5.2
 
+ # Internationalization for date/number formatting
+ intl: ^0.20.2
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
-import 'dart:async';
+import 'package:intl/intl.dart';
+import '../models/enums.dart';
 
 /// Data class representing a leaderboard entry
 class LeaderboardEntry {
   final String playerName;
   final int score;
   final DateTime date;
-  final String difficulty;
+  final Difficulty difficulty;
 
   const LeaderboardEntry({
     required this.playerName,
@@ -32,53 +33,53 @@ class _LeaderboardScreenState extends State<LeaderboardScreen>
 
   // Mock leaderboard data - replace with actual data from storage
   final List<LeaderboardEntry> _allTimeScores = [
-    LeaderboardEntry(
+      LeaderboardEntry(
       playerName: 'ProGamer99',
       score: 999999,
       date: DateTime(2024, 12, 15),
-      difficulty: 'Expert',
+      difficulty: Difficulty.expert,
     ),
     LeaderboardEntry(
       playerName: 'VibeMaster',
       score: 875420,
       date: DateTime(2024, 12, 14),
-      difficulty: 'Hard',
+      difficulty: Difficulty.hard,
     ),
     LeaderboardEntry(
       playerName: 'CodeNinja',
       score: 756300,
       date: DateTime(2024, 12, 13),
-      difficulty: 'Hard',
+      difficulty: Difficulty.hard,
     ),
     LeaderboardEntry(
       playerName: 'FlutterDev',
       score: 643210,
       date: DateTime(2024, 12, 12),
-      difficulty: 'Medium',
+      difficulty: Difficulty.medium,
     ),
     LeaderboardEntry(
       playerName: 'DartHero',
       score: 521000,
       date: DateTime(2024, 12, 11),
-      difficulty: 'Medium',
+      difficulty: Difficulty.medium,
     ),
     LeaderboardEntry(
       playerName: 'WidgetWizard',
       score: 489500,
       date: DateTime(2024, 12, 10),
-      difficulty: 'Medium',
+      difficulty: Difficulty.medium,
     ),
     LeaderboardEntry(
       playerName: 'StateBuilder',
       score: 345600,
       date: DateTime(2024, 12, 9),
-      difficulty: 'Easy',
+      difficulty: Difficulty.easy,
     ),
     LeaderboardEntry(
       playerName: 'SetStateStar',
       score: 234500,
       date: DateTime(2024, 12, 8),
-      difficulty: 'Easy',
+      difficulty: Difficulty.easy,
     ),
   ];
 
@@ -119,18 +120,16 @@ class _LeaderboardScreenState extends State<LeaderboardScreen>
     super.dispose();
   }
 
-  Color _getDifficultyColor(String difficulty) {
+  Color _getDifficultyColor(Difficulty difficulty) {
     switch (difficulty) {
-      case 'Expert':
+      case Difficulty.expert:
         return const Color(0xFFE94560);
-      case 'Hard':
+      case Difficulty.hard:
         return const Color(0xFFF39C12);
-      case 'Medium':
+      case Difficulty.medium:
         return const Color(0xFF2ECC71);
-      case 'Easy':
+      case Difficulty.easy:
         return const Color(0xFF3498DB);
-      default:
-        return Colors.white70;
     }
   }
 
@@ -299,7 +298,7 @@ class _LeaderboardScreenState extends State<LeaderboardScreen>
                         borderRadius: BorderRadius.circular(4),
                       ),
                       child: Text(
-                        entry.difficulty,
+                        entry.difficulty.displayName,
                         style: TextStyle(
                           fontSize: 10,
                           fontWeight: FontWeight.w600,
@@ -309,7 +308,7 @@ class _LeaderboardScreenState extends State<LeaderboardScreen>
                     ),
                     const SizedBox(width: 8),
                     Text(
-                      '${entry.date.day}/${entry.date.month}/${entry.date.year}',
+                      DateFormat('dd/MM/yyyy').format(entry.date),
                       style: const TextStyle(
                         color: Colors.white54,
                         fontSize: 12,
