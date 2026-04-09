@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:async';
 
 /// Settings screen for game configuration
@@ -22,6 +23,8 @@ class _SettingsScreenState extends State<SettingsScreen>
   String _difficulty = 'Medium';
   String _theme = 'Dark';
 
+  bool _isLoading = true;
+
   final List<String> _difficulties = ['Easy', 'Medium', 'Hard', 'Expert'];
   final List<String> _themes = ['Dark', 'Light', 'Neon', 'Retro'];
 
@@ -40,12 +43,80 @@ class _SettingsScreenState extends State<SettingsScreen>
       curve: Curves.easeOutCubic,
     ));
     _slideController.forward();
+
+    _loadSettings();
   }
 
   @override
   void dispose() {
     _slideController.dispose();
     super.dispose();
+  }
+
+  /// Load settings from SharedPreferences
+  Future<void> _loadSettings() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      setState(() {
+        _soundEnabled = prefs.getBool('soundEnabled') ?? true;
+        _musicEnabled = prefs.getBool('musicEnabled') ?? true;
+        _soundVolume = prefs.getDouble('soundVolume') ?? 0.8;
+        _musicVolume = prefs.getDouble('musicVolume') ?? 0.6;
+        _difficulty = prefs.getString('difficulty') ?? 'Medium';
+        _theme = prefs.getString('theme') ?? 'Dark';
+        _isLoading = false;
+      });
+    } catch (e) {
+      setState(() => _isLoading = false);
+    }
+  }
+
+  /// Save settings to SharedPreferences
+  Future<void> _saveSettings() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setBool('soundEnabled', _soundEnabled);
+      await prefs.setBool('musicEnabled', _musicEnabled);
+      await prefs.setDouble('soundVolume', _soundVolume);
+      await prefs.setDouble('musicVolume', _musicVolume);
+      await prefs.setString('difficulty', _difficulty);
+      await prefs.setString('theme', _theme);
+      return;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  /// Reset all game progress and settings
+  Future<void> _resetAllProgress() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+
+      // Clear game-specific keys
+      await prefs.remove('soundEnabled');
+      await prefs.remove('musicEnabled');
+      await prefs.remove('soundVolume');
+      await prefs.remove('musicVolume');
+      await prefs.remove('difficulty');
+      await prefs.remove('theme');
+
+      // Reset to defaults
+      await _resetToDefaults();
+    } catch (e) {
+      // Error occurred during reset
+    }
+  }
+
+  /// Reset to default values
+  Future<void> _resetToDefaults() async {
+    setState(() {
+      _soundEnabled = true;
+      _musicEnabled = true;
+      _soundVolume = 0.8;
+      _musicVolume = 0.6;
+      _difficulty = 'Medium';
+      _theme = 'Dark';
+    });
   }
 
   void _showResetConfirmation() {
@@ -73,9 +144,12 @@ class _SettingsScreenState extends State<SettingsScreen>
             ),
           ),
           ElevatedButton(
-            onPressed: () {
+            onPressed: () async {
               Navigator.of(context).pop();
-              _showSuccessSnackBar('All progress has been reset');
+              await _resetAllProgress();
+              if (mounted) {
+                _showSuccessSnackBar('All progress has been reset');
+              }
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color(0xFFE94560),
@@ -98,8 +172,48 @@ class _SettingsScreenState extends State<SettingsScreen>
     );
   }
 
+  void _showErrorSnackBar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: const Color(0xFFE94560),
+        duration: const Duration(seconds: 2),
+        behavior: SnackBarBehavior.floating,
+      ),
+    );
+  }
+
+  Future<void> _onSaveSettings() async {
+    try {
+      await _saveSettings();
+      if (mounted) {
+        _showSuccessSnackBar('Settings saved!');
+        Timer(const Duration(milliseconds: 500), () {
+          if (mounted) {
+            Navigator.of(context).pop();
+          }
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        _showErrorSnackBar('Failed to save settings');
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    if (_isLoading) {
+      return const Scaffold(
+        backgroundColor: Color(0xFF121212),
+        body: Center(
+          child: CircularProgressIndicator(
+            color: Color(0xFFE94560),
+          ),
+        ),
+      );
+    }
+
     return Scaffold(
       backgroundColor: const Color(0xFF121212),
       appBar: AppBar(
@@ -228,12 +342,7 @@ class _SettingsScreenState extends State<SettingsScreen>
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
-                    onPressed: () {
-                      _showSuccessSnackBar('Settings saved!');
-                      Timer(const Duration(milliseconds: 500), () {
-                        Navigator.of(context).pop();
-                      });
-                    },
+                    onPressed: _onSaveSettings,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFFE94560),
                       foregroundColor: Colors.white,

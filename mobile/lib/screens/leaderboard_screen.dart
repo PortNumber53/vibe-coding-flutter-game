@@ -268,7 +268,7 @@ class _LeaderboardScreenState extends State<LeaderboardScreen>
                       ),
                       child: Center(
                         child: Text(
-                          entry.playerName.substring(0, 1).toUpperCase(),
+                          entry.playerName.isEmpty ? '' : entry.playerName.substring(0, 1).toUpperCase(),
                           style: TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
