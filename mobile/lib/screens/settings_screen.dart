@@ -2,6 +2,25 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:async';
 
+/// Game difficulty levels
+enum Difficulty { easy, medium, hard, expert }
+
+/// Game theme options
+enum GameTheme { dark, light, neon, retro }
+
+/// Extension for enum display strings
+extension DifficultyExtension on Difficulty {
+  String get displayName {
+    return name[0].toUpperCase() + name.substring(1);
+  }
+}
+
+extension GameThemeExtension on GameTheme {
+  String get displayName {
+    return name[0].toUpperCase() + name.substring(1);
+  }
+}
+
 /// Settings screen for game configuration
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -20,13 +39,13 @@ class _SettingsScreenState extends State<SettingsScreen>
   bool _musicEnabled = true;
   double _soundVolume = 0.8;
   double _musicVolume = 0.6;
-  String _difficulty = 'Medium';
-  String _theme = 'Dark';
+  Difficulty _difficulty = Difficulty.medium;
+  GameTheme _theme = GameTheme.dark;
 
   bool _isLoading = true;
 
-  final List<String> _difficulties = ['Easy', 'Medium', 'Hard', 'Expert'];
-  final List<String> _themes = ['Dark', 'Light', 'Neon', 'Retro'];
+  final List<Difficulty> _difficulties = Difficulty.values;
+  final List<GameTheme> _themes = GameTheme.values;
 
   @override
   void initState() {
@@ -62,13 +81,31 @@ class _SettingsScreenState extends State<SettingsScreen>
         _musicEnabled = prefs.getBool('musicEnabled') ?? true;
         _soundVolume = prefs.getDouble('soundVolume') ?? 0.8;
         _musicVolume = prefs.getDouble('musicVolume') ?? 0.6;
-        _difficulty = prefs.getString('difficulty') ?? 'Medium';
-        _theme = prefs.getString('theme') ?? 'Dark';
+        _difficulty = _parseDifficulty(prefs.getString('difficulty'));
+        _theme = _parseTheme(prefs.getString('theme'));
         _isLoading = false;
       });
     } catch (e) {
       setState(() => _isLoading = false);
     }
+  }
+
+  /// Parse difficulty from string
+  Difficulty _parseDifficulty(String? value) {
+    if (value == null) return Difficulty.medium;
+    return Difficulty.values.firstWhere(
+      (d) => d.name == value.toLowerCase(),
+      orElse: () => Difficulty.medium,
+    );
+  }
+
+  /// Parse theme from string
+  GameTheme _parseTheme(String? value) {
+    if (value == null) return GameTheme.dark;
+    return GameTheme.values.firstWhere(
+      (t) => t.name == value.toLowerCase(),
+      orElse: () => GameTheme.dark,
+    );
   }
 
   /// Save settings to SharedPreferences
@@ -79,8 +116,8 @@ class _SettingsScreenState extends State<SettingsScreen>
       await prefs.setBool('musicEnabled', _musicEnabled);
       await prefs.setDouble('soundVolume', _soundVolume);
       await prefs.setDouble('musicVolume', _musicVolume);
-      await prefs.setString('difficulty', _difficulty);
-      await prefs.setString('theme', _theme);
+      await prefs.setString('difficulty', _difficulty.name);
+      await prefs.setString('theme', _theme.name);
       return;
     } catch (e) {
       rethrow;
@@ -114,8 +151,8 @@ class _SettingsScreenState extends State<SettingsScreen>
       _musicEnabled = true;
       _soundVolume = 0.8;
       _musicVolume = 0.6;
-      _difficulty = 'Medium';
-      _theme = 'Dark';
+      _difficulty = Difficulty.medium;
+      _theme = GameTheme.dark;
     });
   }
 
@@ -297,23 +334,31 @@ class _SettingsScreenState extends State<SettingsScreen>
                 _buildCard(
                   child: Column(
                     children: [
-                      _buildDropdownTile(
+                      _buildDropdownTile<Difficulty>(
                         icon: Icons.speed,
                         title: 'Difficulty',
                         value: _difficulty,
+                        valueDisplay: _difficulty.displayName,
                         items: _difficulties,
+                        getItemDisplay: (d) => d.displayName,
                         onChanged: (value) {
-                          setState(() => _difficulty = value!);
+                          if (value != null) {
+                            setState(() => _difficulty = value);
+                          }
                         },
                       ),
                       const Divider(color: Colors.white24),
-                      _buildDropdownTile(
+                      _buildDropdownTile<GameTheme>(
                         icon: Icons.palette,
                         title: 'Theme',
                         value: _theme,
+                        valueDisplay: _theme.displayName,
                         items: _themes,
+                        getItemDisplay: (t) => t.displayName,
                         onChanged: (value) {
-                          setState(() => _theme = value!);
+                          if (value != null) {
+                            setState(() => _theme = value);
+                          }
                         },
                       ),
                     ],
@@ -500,12 +545,14 @@ class _SettingsScreenState extends State<SettingsScreen>
     );
   }
 
-  Widget _buildDropdownTile({
+  Widget _buildDropdownTile<T>(({
     required IconData icon,
     required String title,
-    required String value,
-    required List<String> items,
-    required ValueChanged<String?> onChanged,
+    required T value,
+    required String valueDisplay,
+    required List<T> items,
+    required String Function(T) getItemDisplay,
+    required ValueChanged<T?> onChanged,
   }) {
     return ListTile(
       leading: Container(
@@ -524,16 +571,16 @@ class _SettingsScreenState extends State<SettingsScreen>
           fontWeight: FontWeight.w600,
         ),
       ),
-      trailing: DropdownButton<String>(
+      trailing: DropdownButton<T>(
         value: value,
         dropdownColor: const Color(0xFF16213E),
         underline: const SizedBox(),
         icon: const Icon(Icons.arrow_drop_down, color: Colors.white70),
         style: const TextStyle(color: Colors.white70),
-        items: items.map((String item) {
-          return DropdownMenuItem<String>(
+        items: items.map((T item) {
+          return DropdownMenuItem<T>(
             value: item,
-            child: Text(item),
+            child: Text(getItemDisplay(item)),
           );
         }).toList(),
         onChanged: onChanged,
