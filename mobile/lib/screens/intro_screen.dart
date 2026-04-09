@@ -71,79 +71,74 @@ class _IntroScreenState extends State<IntroScreen>
     return Scaffold(
       backgroundColor: const Color(0xFF1A1A2E), // Deep dark blue
       body: Center(
-        child: AnimatedBuilder(
-          animation: _animationController,
-          builder: (context, child) {
-            return FadeTransition(
-              opacity: _fadeAnimation,
-              child: ScaleTransition(
-                scale: _scaleAnimation,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    // Game Icon
-                    Container(
-                      width: 120,
-                      height: 120,
-                      decoration: BoxDecoration(
-                        gradient: const LinearGradient(
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                          colors: [
-                            Color(0xFF16213E),
-                            Color(0xFF0F3460),
-                          ],
-                        ),
-                        borderRadius: BorderRadius.circular(20),
-                        boxShadow: [
-                          BoxShadow(
-                            color: const Color(0xFFE94560).withAlpha(128),
-                            blurRadius: 20,
-                            spreadRadius: 5,
-                          ),
-                        ],
-                      ),
-                      child: const Icon(
-                        Icons.videogame_asset,
-                        size: 60,
-                        color: Color(0xFFE94560),
-                      ),
+        child: FadeTransition(
+          opacity: _fadeAnimation,
+          child: ScaleTransition(
+            scale: _scaleAnimation,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                // Game Icon
+                Container(
+                  width: 120,
+                  height: 120,
+                  decoration: BoxDecoration(
+                    gradient: const LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        Color(0xFF16213E),
+                        Color(0xFF0F3460),
+                      ],
                     ),
-                    const SizedBox(height: 30),
-                    // Game Title
-                    const Text(
-                      'VIBE CODING',
-                      style: TextStyle(
-                        fontSize: 42,
-                        fontWeight: FontWeight.bold,
-                        color: Color(0xFFE94560),
-                        letterSpacing: 4,
+                    borderRadius: BorderRadius.circular(20),
+                    boxShadow: [
+                      BoxShadow(
+                        color: const Color(0xFFE94560).withAlpha(128),
+                        blurRadius: 20,
+                        spreadRadius: 5,
                       ),
-                    ),
-                    const Text(
-                      'G A M E',
-                      style: TextStyle(
-                        fontSize: 28,
-                        fontWeight: FontWeight.w300,
-                        color: Colors.white70,
-                        letterSpacing: 8,
-                      ),
-                    ),
-                    const SizedBox(height: 60),
-                    // Loading indicator
-                    const SizedBox(
-                      width: 40,
-                      height: 40,
-                      child: CircularProgressIndicator(
-                        color: Color(0xFFE94560),
-                        strokeWidth: 3,
-                      ),
-                    ),
-                  ],
+                    ],
+                  ),
+                  child: const Icon(
+                    Icons.videogame_asset,
+                    size: 60,
+                    color: Color(0xFFE94560),
+                  ),
                 ),
-              ),
-            );
-          },
+                const SizedBox(height: 30),
+                // Game Title
+                const Text(
+                  'VIBE CODING',
+                  style: TextStyle(
+                    fontSize: 42,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFFE94560),
+                    letterSpacing: 4,
+                  ),
+                ),
+                const Text(
+                  'G A M E',
+                  style: TextStyle(
+                    fontSize: 28,
+                    fontWeight: FontWeight.w300,
+                    color: Colors.white70,
+                    letterSpacing: 8,
+                  ),
+                ),
+                const SizedBox(height: 60),
+                // Loading indicator
+                const SizedBox(
+                  width: 40,
+                  height: 40,
+                  child: CircularProgressIndicator(
+                    color: Color(0xFFE94560),
+                    strokeWidth: 3,
+                  ),
+                ),
+              ],
+            ),
+          ),
         ),
       ),
     );
