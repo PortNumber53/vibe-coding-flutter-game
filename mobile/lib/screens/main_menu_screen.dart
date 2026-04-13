@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'settings_screen.dart';
 import 'leaderboard_screen.dart';
+import 'game_screen.dart';
 
 /// Main Menu Screen with navigation options:
 /// - New Game
@@ -24,7 +25,7 @@ class _MainMenuScreenState extends State<MainMenuScreen>
       title: 'New Game',
       icon: Icons.play_arrow,
       color: const Color(0xFF4CAF50),
-      onTap: (context) => _showNotImplemented(context, 'New Game'),
+      onTap: (context) => _navigateToGame(context),
     ),
     MenuItem(
       title: 'Load Game',
@@ -79,6 +80,14 @@ class _MainMenuScreenState extends State<MainMenuScreen>
   void dispose() {
     _animationController.dispose();
     super.dispose();
+  }
+
+  static void _navigateToGame(BuildContext context) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => const GameScreen(),
+      ),
+    );
   }
 
   static void _showNotImplemented(BuildContext context, String feature) {
