@@ -93,7 +93,7 @@ class _GameScreenState extends State<GameScreen>
             ),
             const SizedBox(height: 8),
             Text(
-              'Wave Reached: $_gameWorld.wave',
+              'Wave Reached: ${_gameWorld.wave}',
               style: const TextStyle(
                 color: Colors.white70,
                 fontSize: 16,
@@ -439,7 +439,7 @@ class _GameScreenState extends State<GameScreen>
         case LogicalKeyboardKey.keyW:
           _gameWorld.setMovement(
             true,
-            _gameWorld.state == GameState.playing ? false : false,
+            false,
           );
           break;
         case LogicalKeyboardKey.arrowDown:

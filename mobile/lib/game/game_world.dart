@@ -9,7 +9,7 @@ import 'entities/particle.dart';
 import 'entities/starfield.dart';
 
 /// Game states
-eenum GameState {
+enum GameState {
   idle,
   playing,
   paused,

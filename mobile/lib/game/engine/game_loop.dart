@@ -5,7 +5,7 @@ import 'package:flutter/scheduler.dart';
 typedef GameLoopCallback = void Function(double deltaTime, double totalTime);
 
 /// Event types for the game loop
-eenum GameLoopEvent {
+enum GameLoopEvent {
   start,
   pause,
   resume,
